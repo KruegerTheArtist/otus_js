@@ -54,13 +54,13 @@ function tree(directory, depth) {
   return treeStructure;
 }
 
-function getResultTree(treeStructure, indentation = '') {
+function getResultTree(treeStructure, indentation = '', currentDepth = 0) {
   for (const item in treeStructure) {
     if (treeStructure[item] === null) {
       console.log(`${indentation}├── ${item}`);
     } else {
       console.log(`${indentation}${item}`);
-      getResultTree(treeStructure[item], `${indentation}│   `);
+      getResultTree(treeStructure[item], `${indentation}│   `, currentDepth + 1);
     }
   }
 }
