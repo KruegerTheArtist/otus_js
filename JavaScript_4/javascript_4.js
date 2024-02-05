@@ -6,59 +6,53 @@
 // getPath($0) // => "body div.someclass ul li:first-child"
 // Использовать TDD, добавить юнит тесты для функции
 
-function getPath(currEl, testedBody) {
-	var arr = [];
+function getPath(neededElement) {
+	if (!neededElement) {
+		return;
+	}
 
-	function eachElements(el) {
+	const arr = [];
 
-		const documentBody = testedBody ? testedBody : document?.body;
-		if (el === documentBody) {
+	function eachElements(elem) {
+		if (elem === document?.body) {
 			return arr.reverse();
 		}
 
-		arr.push(el?.tagName?.toLowerCase() + getNthPosition(el));
+		arr.push(`${elem.tagName.toLowerCase()}${getNthPosition(elem)}`);
 
-		return eachElements(el?.parentElement);
-
+		return eachElements(elem.parentElement);
 	}
 
-	function getNthPosition(el) {
+	function getNthPosition(element) {
+		let prevElement = element.previousElementSibling;
+		let count = 1;
 
-		var previousEl = el?.previousElementSibling,
-			count = 1,
-			result = '';
-
-
-		while (previousEl) {
+		while (prevElement) {
 			++count;
-			previousEl = previousEl?.previousElementSibling;
+			prevElement = prevElement.previousElementSibling;
 		}
 
-		result = ':nth-child(' + count + ')';
-
-		return result;
-
+		return `:nth-child(${count})`;
 	}
 
-	var strOut = eachElements(currEl).join('>');
-	console.log(currEl);
-	alert(strOut);
-}
+	const strOut = eachElements(neededElement).join('>');
 
+	return strOut;
+}
 
 function test() {
-	const body =
-		`<body onclick="getPath(event.target)">
-<div class="learn">
-	<form>FORM
-	    <div>DIV
-	      <p>P</p>
-	    </div>
-  	</form>
-</div>
-</body>`
+	function assert(condition, message) {
+		if (!condition) {
+			console.error(`Тест завершился с ошибкой: ${message}`);
+		} else {
+			console.log('Тест пройден');
+		}
+	}
 
-	console.log(getPath('<p>P</p>', body));
+	const element = document.querySelector('.ul-otus li:nth-child(2)');
+	const selector = getPath(element);
+	console.log(document.querySelectorAll(selector).length, document.querySelectorAll(selector), selector);
+	assert(document.querySelectorAll(selector).length === 1, 'Должен был найти один элемент');
 }
 
-test()
+test();
