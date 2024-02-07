@@ -32,9 +32,12 @@ const fs = require('fs');
 const path = require('path');
 
 function tree(directory, depth) {
-  const treeStructure = {};
+  const treeStructure = {
+    name: path.basename(directory),
+    children: []
+  };
 
-  function traverse(currentPath, currentDepth) {
+  function traverse(currentPath, currentNode, currentDepth) {
     const readedFiles = fs.readdirSync(currentPath);
 
     readedFiles.forEach((file) => {
@@ -42,41 +45,46 @@ function tree(directory, depth) {
       const stats = fs.statSync(fullPath);
 
       if (stats.isDirectory() && (currentDepth < depth || depth === undefined)) {
-        treeStructure[file] = {};
-        traverse(fullPath, currentDepth + 1);
+        const directoryNode = { name: file, children: [] };
+        currentNode.children.push(directoryNode);
+        traverse(fullPath, directoryNode, currentDepth + 1);
       } else {
-        treeStructure[file] = null;
+        currentNode.children.push({ name: file });
       }
     });
   }
 
-  traverse(directory, 0);
+  traverse(directory, treeStructure, 0);
   return treeStructure;
 }
 
-function getResultTree(treeStructure, indentation = '', currentDepth = 0) {
-  for (const item in treeStructure) {
-    if (treeStructure[item] === null) {
-      console.log(`${indentation}├── ${item}`);
-    } else {
-      console.log(`${indentation}${item}`);
-      getResultTree(treeStructure[item], `${indentation}│   `, currentDepth + 1);
-    }
+function getResultTree(treeStructure, indentation = '', visited = new Set()) {
+  if (Array.isArray(treeStructure)) {
+    treeStructure.forEach((item, index) => {
+      const isLast = index === treeStructure.length - 1;
+      if ('children' in item && !visited.has(item.name)) {
+        visited.add(item.name);
+        console.log(`${indentation}${isLast ? '└── ' : '├── '}${item.name}`);
+        const newIndentation = indentation + (isLast ? '    ' : '│   ');
+        getResultTree(item.children, newIndentation, visited);
+      } else {
+        console.log(`${indentation}${isLast ? '└── ' : '├── '}${item.name}`);
+      }
+    });
   }
 }
 
 function getTotalCountFilesAndDirectories(treeStructure) {
   let filesCount = 0;
   let directoriesCount = 0;
-
   function count(tree) {
-    for (const item in tree) {
-      if (tree[item] === null) {
-        filesCount++;
-      } else {
-        directoriesCount++;
-        count(tree[item]);
+    if ('children' in tree) {
+      directoriesCount++;
+      for (const item of tree.children) {
+        count(item);
       }
+    } else {
+      filesCount++;
     }
   }
 
@@ -93,6 +101,6 @@ if (!directory) {
 }
 
 const result = tree(directory, parseInt(depth, 10));
-getResultTree(result);
 const counts = getTotalCountFilesAndDirectories(result);
-console.log(`${counts.directories} directories, ${counts.files} files`)
+console.log(`${counts.directories} directories, ${counts.files} files`);
+getResultTree([result]);
