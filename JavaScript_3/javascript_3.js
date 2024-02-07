@@ -58,20 +58,15 @@ function tree(directory, depth) {
   return treeStructure;
 }
 
-function getResultTree(treeStructure, indentation = '', visited = new Set()) {
-  if (Array.isArray(treeStructure)) {
-    treeStructure.forEach((item, index) => {
-      const isLast = index === treeStructure.length - 1;
-      if ('children' in item && !visited.has(item.name)) {
-        visited.add(item.name);
-        console.log(`${indentation}${isLast ? '└── ' : '├── '}${item.name}`);
-        const newIndentation = indentation + (isLast ? '    ' : '│   ');
-        getResultTree(item.children, newIndentation, visited);
-      } else {
-        console.log(`${indentation}${isLast ? '└── ' : '├── '}${item.name}`);
-      }
-    });
-  }
+function getResultTree(treeStructure, depth = 0) {
+  treeStructure.forEach((item, index) => {
+    const prefix = index === treeStructure.length - 1 ? '└── ' : '├── ';
+    const indentation = '│   '.repeat(depth);
+    console.log(`${indentation}${prefix}${item.name}`);
+    if ('children' in item) {
+      getResultTree(item.children, depth + 1);
+    }
+  });
 }
 
 function getTotalCountFilesAndDirectories(treeStructure) {
