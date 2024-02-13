@@ -113,7 +113,7 @@ async function updateTask (testedTask: ITask): Promise<void> {
 
 /** Удалить задачу */
 async function deleteTask (id: string): Promise<void> {
-  await axios.delete(`http://localhost:${PORT}/api/v1/tasks/tasks?${id}`, {
+  await axios.delete(`http://localhost:${PORT}/api/v1/tasks/tasks?taskId=${id}`, {
     headers: {
       Authorization: `Bearer ${token}`
     }

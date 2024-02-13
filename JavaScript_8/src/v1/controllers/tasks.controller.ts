@@ -10,16 +10,23 @@ export const getAllTasks = (req: Request, res: Response): void => {
 export const getOneTask = (req: Request, res: Response): void => {
   const { query } = req
   const task = getOneTaskService(String(query.taskId))
-  res.status(200).send({
-    status: 'OK',
-    data: task
-  })
+  if (typeof task === 'string') {
+    res.status(400).send({
+      status: 'BadRequest',
+      data: task
+    })
+  } else {
+    res.status(200).send({
+      status: 'OK',
+      data: task
+    })
+  }
 }
 
 export const createNewTask = (req: Request, res: Response): void => {
   const { body } = req
   if (
-    body.id ||
+    !body.id ||
         !body.tag ||
         !body.level ||
         !body.description

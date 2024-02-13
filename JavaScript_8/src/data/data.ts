@@ -19,7 +19,7 @@ export const createNewUserToData = (user: IUser): IUser => {
     return users[finedIndex]
   }
   users.push(user)
-  saveToData(data)
+  saveToData(getAllData())
   return user
 }
 
@@ -33,7 +33,7 @@ export const createNewTaskInToData = (newTask: ITask): ITask => {
     return tasks[finedIndex]
   }
   tasks.push(newTask)
-  saveToData(data)
+  saveToData(getAllData())
   return newTask
 }
 
@@ -47,7 +47,7 @@ export const updateTaskInToData = (newTask: ITask): ITask | undefined => {
     return
   }
   tasks[findedIndex] = newTask
-  saveToData(data)
+  saveToData(getAllData())
   return newTask
 }
 
@@ -61,8 +61,8 @@ export const deleteTaskInToData = (taskId: string): void => {
     return
   }
   const newData: ITask[] = tasks.filter(task => task.id !== taskId)
-  data.tasks = newData
-  saveToData(data)
+  getAllData().tasks = newData
+  saveToData(getAllData())
 }
 
 export const logoutUser = (userId: string): void => {
@@ -77,5 +77,5 @@ export const logoutUser = (userId: string): void => {
 
   const newData = users.filter(user => user.id !== userId)
   getAllData().users = newData
-  saveToData(data)
+  saveToData(getAllData())
 }
