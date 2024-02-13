@@ -1,5 +1,6 @@
 import { type Response, type Request } from 'express'
 import { login as loginService, createNewUser as createNewUserService, logout as logoutService } from '../services/identity.service'
+import { type IUser } from '../../shared/interfaces/user.interface'
 
 export const login = (req: Request, res: Response): void => {
   const { body } = req
@@ -8,7 +9,7 @@ export const login = (req: Request, res: Response): void => {
       status: 'Unauthorized'
     })
   }
-  loginService({ id: body.id, phoneNumber: body.phoneNumber, password: body.password })
+  loginService(String(body.id))
   res.status(200).send({
     status: 'OK',
     token: 'token123'
@@ -20,7 +21,8 @@ export const register = (req: Request, res: Response): void => {
   if (!body.phoneNumber || !body.password) {
     return
   }
-  const createUser = createNewUserService({ id: Math.random(), phoneNumber: body.phoneNumber, password: body.password })
+  const user: IUser = { id: Math.random().toString(), phoneNumber: body.phoneNumber, password: body.password }
+  const createUser = createNewUserService(user)
   res.status(201).send({
     status: 'OK',
     data: createUser
