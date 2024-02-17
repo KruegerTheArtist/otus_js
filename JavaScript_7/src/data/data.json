@@ -1,0 +1,48 @@
+{
+  "tasks": [
+    {
+      "id": "1",
+      "tag": "Структуры данных",
+      "level": "Medium",
+      "description": "Задача о структурах данных"
+    },
+    {
+      "id": "2",
+      "tag": "Алгоритмы",
+      "level": "Medium",
+      "description": "Задача о алгоритмах"
+    },
+    {
+      "id": "3",
+      "tag": "Верстка",
+      "level": "Easy",
+      "description": "Задача про верстку. надо сверстать лендинг"
+    },
+    {
+      "id": "4",
+      "tag": "Стили",
+      "level": "Easy",
+      "description": "Задача про стили, надо поправить стиль в лендинге"
+    },
+    {
+      "id": "5",
+      "tag": "Воркер",
+      "level": "Hard",
+      "description": "Задача про воркер, нужно написать воркер, который бы каждый день в 3 часа дня удалял все записи о ДТП годовалой давности"
+    },
+    {
+      "id": "6",
+      "tag": "Random",
+      "level": "RandomLevel",
+      "description": "description"
+    },
+    {
+      "id": "7",
+      "tag": "Random",
+      "level": "RandomLevel",
+      "description": "description"
+    }
+  ],
+  "users": [
+  ]
+}
