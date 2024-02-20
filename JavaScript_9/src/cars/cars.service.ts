@@ -1,65 +1,78 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ICar } from './interfaces/car.interface';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ICar } from './interfaces/car.interface';
 import { Car } from '../shared/entities/car.entity';
-import { Repository } from 'typeorm';
-import { BRANDS } from 'src/shared/constants/brands';
+import { DeleteResult, Repository } from 'typeorm';
+import { BRANDS } from '../shared/constants/brands';
+import { CarCreateRequest } from './interfaces/requests/car-create-request.type';
 
 /** Сервис для работы с автомобилями */
 @Injectable()
 export class CarsService {
   constructor(
     @InjectRepository(Car)
-    private readonly carsRepository: Repository<Car>,
+    private readonly _carsRepository: Repository<Car>,
   ) {
     this._initCars();
   }
-  async create(car: ICar): Promise<NotFoundException | Car> {
-    const newCar = await this.carsRepository.save({
-      brand: car.brand,
-      model: car.model,
-    });
+
+  /** Создать новую машшину */
+  async create(car: CarCreateRequest): Promise<NotFoundException | Car> {
+    const newCar = await this._carsRepository.save(car);
     return newCar;
   }
 
   /** Получить полный список авто */
   async getAll(): Promise<Car[]> {
-    const cars = await this.carsRepository.find();
+    const cars = await this._carsRepository.find();
     return cars;
   }
 
-  // /** Получить один автомобиль по ID */
-  // getOneById(id: string): ICar | NotFoundException {
-  //   const car = this.repository.getCarById(id);
-  //   if (!car) {
-  //     throw new NotFoundException(`Car with id:${id} not found`);
-  //   }
-  //   return car;
-  // }
+  /** Получить один автомобиль по ID */
+  async getOneById(id: string): Promise<Car | NotFoundException> {
+    const car = await this._carsRepository.findOne({ where: { id } });
+    if (!car) {
+      throw new NotFoundException(`Car with id:${id} not found`);
+    }
+    return car;
+  }
 
-  // /** Обновить авто по ID */
-  // update(id: string, car: ICar): ICar | NotFoundException {
-  //   const newCar = this.repository.updateCar(id, car);
-  //   return newCar;
-  // }
+  /** Обновить авто по ID */
+  async update(id: string, car: ICar): Promise<Car | NotFoundException> {
+    const findedCar = await this._carsRepository.findOne({ where: { id } });
+    if (!findedCar) {
+      throw new NotFoundException(`Car with id:${id} not found`);
+    }
+    const updatedCar = await this._carsRepository.save({
+      ...findedCar,
+      ...car,
+    });
+    return updatedCar;
+  }
 
-  // /** Удаление автомобиля из списка */
-  // remove(id: string): void {
-  //   this.repository.deleteCar(id);
-  // }
+  /** Удаление автомобиля из списка */
+  async remove(id: string): Promise<DeleteResult> {
+    const findedCar = await this._carsRepository.findOne({ where: { id } });
+    if (!findedCar) {
+      throw new NotFoundException(`Car with id:${id} not found`);
+    }
+    return await this._carsRepository.delete({ id });
+  }
 
   /** Инициализировать */
   private _initCars(): void {
-    this.carsRepository.find().then((cars) => {
+    this._carsRepository.find().then((cars) => {
       const carsArray: ICar[] = [];
       BRANDS.forEach((models: string[], brand: string) => {
         models.forEach((model) => {
-          if (cars.find((c) => c.brand !== brand && c.model !== model)) {
+          if (
+            !cars.filter((c) => c.brand === brand && c.model === model).length
+          ) {
             carsArray.push({ brand, model });
           }
         });
       });
-      this.carsRepository.insert(carsArray);
+      this._carsRepository.insert(carsArray);
     });
   }
 }

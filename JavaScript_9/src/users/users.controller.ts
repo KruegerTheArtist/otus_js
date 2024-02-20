@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   NotFoundException,
   Param,
   Post,
@@ -10,6 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { IUser } from './interfaces/user.interface';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { DeleteResult } from 'typeorm';
 
 @Controller('users')
 export class UsersController {
@@ -22,7 +24,7 @@ export class UsersController {
     this._usersService.assignCarForUserDream(id);
   }
 
-  /** Проставить рандомную машину мечты по его бренду для пользователя */
+  /** Обновить данные о пользователе */
   @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(
@@ -30,5 +32,12 @@ export class UsersController {
     @Body() user: IUser,
   ): Promise<NotFoundException | IUser> {
     return this._usersService.update(id, user);
+  }
+
+  /** Проставить рандомную машину мечты по его бренду для пользователя */
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<DeleteResult> {
+    return this._usersService.delete(id);
   }
 }

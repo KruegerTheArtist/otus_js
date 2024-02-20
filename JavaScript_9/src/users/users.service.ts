@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IUser } from './interfaces/user.interface';
 import { User } from '../shared/entities/user.entity';
@@ -16,15 +16,17 @@ import { IUserSignIn } from './interfaces/requests/user-sign-in.interface';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private _userRepository: Repository<User>,
     @InjectRepository(Car)
-    private carRepository: Repository<Car>,
+    private _carRepository: Repository<Car>,
   ) {}
 
   /** Проставить произвольную машину мечты для пользователя */
-  async createAndAssignRandomCar(userDto: IUser): Promise<User> {
-    const user = this.userRepository.create(userDto);
-    const cars = await this.carRepository.find(); // Получаем все доступные автомобили
+  async createAndAssignRandomCar(
+    userDto: IUser,
+  ): Promise<Omit<User, 'password'>> {
+    const user = this._userRepository.create(userDto);
+    const cars = await this._carRepository.find(); // Получаем все доступные автомобили
 
     // Выбираем случайный автомобиль
     const randomCar = cars[Math.floor(Math.random() * cars.length)];
@@ -36,15 +38,16 @@ export class UsersService {
     randomCar.user = user;
 
     // Сохраняем оба объекта в базе данных
-    await this.userRepository.save(user);
-    await this.carRepository.save(randomCar);
+    await this._userRepository.save(user);
+    await this._carRepository.save(randomCar);
 
-    return user;
+    const { password, ...result } = user;
+    return result;
   }
 
   /** Проставить относительно машины мечты конкретную рандомную машину */
   async assignCarForUserDream(id: string): Promise<void | NotFoundException> {
-    const userEntity = await this.userRepository.findOne({
+    const userEntity = await this._userRepository.findOne({
       where: {
         id,
       },
@@ -53,13 +56,13 @@ export class UsersService {
     if (!userEntity) {
       throw NotFoundException;
     }
-    const user = await this.userRepository.findOne({
+    const user = await this._userRepository.findOne({
       where: {
         id: userEntity.id,
       },
     });
     if (user && userEntity.dreamCar) {
-      const brandCars = await this.carRepository.find({
+      const brandCars = await this._carRepository.find({
         where: {
           brand: userEntity.dreamCar,
         },
@@ -67,7 +70,7 @@ export class UsersService {
       const randomDreamCar =
         brandCars[Math.floor(Math.random() * brandCars.length)];
       user.car = randomDreamCar;
-      await this.userRepository.save(user);
+      await this._userRepository.save(user);
     }
   }
 
@@ -75,7 +78,7 @@ export class UsersService {
   async create(
     user: IUserSignIn,
   ): Promise<Omit<IUserSignIn, 'password'> | BadRequestException> {
-    const users = await this.userRepository.find();
+    const users = await this._userRepository.find();
     const findeduser = users.findIndex(
       (u) => u.login == user.login || u.email === user.login,
     );
@@ -84,28 +87,28 @@ export class UsersService {
         `Пользователь с логином: ${user.login} и почтой ${user.email} уже существует`,
       );
     }
-    const newUser = await this.userRepository.save(user);
+    const newUser = await this._userRepository.save(user);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...result } = newUser;
     return result;
   }
 
   /** Получить пользователя по логину */
-  async getOneByLogin(
-    login: string,
-  ): Promise<Omit<User, 'password'> | NotFoundException> {
-    const user = await this.userRepository.findOne({ where: { login } });
+  async getOneByLoginForAuth(login: string): Promise<User | NotFoundException> {
+    console.log('login', login);
+
+    const user = await this._userRepository.findOne({ where: { login } });
     if (!user) {
       throw new NotFoundException(`User with login:${login} not found`);
     }
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...result } = user;
-    return result;
+
+    return user;
   }
 
   /** Обновить информацию о пользователе */
   async update(id: string, user: IUser): Promise<NotFoundException | IUser> {
-    const userEntity = await this.userRepository.findOne({
+    const userEntity = await this._userRepository.findOne({
       where: {
         id,
       },
@@ -125,7 +128,16 @@ export class UsersService {
       password: user.password,
       login: user.login,
     };
-    await this.userRepository.upsert(userForUpdate, ['id']);
+    await this._userRepository.save(userForUpdate);
     return userForUpdate as IUser;
+  }
+
+  /** Удаление пользователя из списка */
+  async delete(id: string): Promise<DeleteResult> {
+    const findedCar = await this._userRepository.findOne({ where: { id } });
+    if (!findedCar) {
+      throw new NotFoundException(`User with id:${id} not found`);
+    }
+    return await this._userRepository.delete({ id });
   }
 }

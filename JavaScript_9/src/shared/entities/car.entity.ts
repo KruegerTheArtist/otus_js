@@ -16,6 +16,6 @@ export class Car {
   })
   model: string;
 
-  @ManyToMany(() => User, (user) => user.cars)
+  @ManyToMany(() => User, (user) => user.cars, { cascade: true })
   user: User;
 }
