@@ -9,22 +9,26 @@ export class CarsRepository {
     {
       id: randomUUID(),
       model: 'Jeep',
-      assemblyDate: new Date('01.01.2005'),
+      brand: '',
+      // assemblyDate: new Date('01.01.2005'),
     },
     {
       id: randomUUID(),
       model: 'Hatchback',
-      assemblyDate: new Date('01.01.20010'),
+      brand: '',
+      // assemblyDate: new Date('01.01.20010'),
     },
     {
       id: randomUUID(),
       model: 'Sedan',
-      assemblyDate: new Date('01.01.2011'),
+      brand: '',
+      // assemblyDate: new Date('01.01.2011'),
     },
     {
       id: randomUUID(),
       model: 'Minivan',
-      assemblyDate: new Date('01.01.2020'),
+      brand: '',
+      // assemblyDate: new Date('01.01.2020'),
     },
   ];
 

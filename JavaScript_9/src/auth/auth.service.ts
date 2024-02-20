@@ -1,9 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { IUser } from '../users/interfaces/user.interface';
 import { UsersService } from '../users/users.service';
 import { ILoginResponse } from './interfaces/login-response.interface';
+import {
+  IUserSignIn,
+  IUserSignIn as IUserSignInRequest,
+} from '../users/interfaces/requests/user-sign-in.interface';
 
 /** Сервис для работы с авторизацией */
 @Injectable()
@@ -15,32 +19,40 @@ export class AuthService {
 
   /** Провалидировать пользователя перед логином */
   async validateUser(
-    username: string,
-    userPassword: string,
-  ): Promise<Omit<IUser, 'password'>> | null {
-    const user = await this.usersService.getOneByUsername(username);
+    user: IUserSignInRequest,
+  ): Promise<Omit<IUserSignInRequest, 'password'>> | null {
+    const findedUser = await this.usersService.getOneByLogin(user.login);
 
-    if (user && userPassword == (user as IUser).password) {
-      const { password, ...result } = user as IUser;
+    if (
+      findedUser &&
+      user.password == (findedUser as unknown as IUser).password
+    ) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user as IUserSignInRequest;
       return result;
     }
     return null;
   }
 
   /** Логин пользователя */
-  async login(user: IUser): Promise<ILoginResponse> {
-    const payload = { username: user.username, sub: user.id };
-    return {
+  async login(user: IUserSignInRequest): Promise<ILoginResponse> {
+    console.log('user ', user);
+
+    const payload = { username: user.login };
+    const loginResponse = {
       access_token: this.jwtService.sign(payload),
-    } as ILoginResponse;
+    };
+    console.log(this.jwtService);
+
+    return loginResponse as ILoginResponse;
   }
 
   /** Регистрация пользователя */
-  async register(user: IUser): Promise<IUser | NotFoundException> {
+  async register(
+    user: IUserSignInRequest,
+  ): Promise<Omit<IUserSignIn, 'password'> | BadRequestException> {
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    return this.usersService.create({
-      username: user.username,
-      password: hashedPassword,
-    });
+    user.password = hashedPassword;
+    return await this.usersService.create(user);
   }
 }

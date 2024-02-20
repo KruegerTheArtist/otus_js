@@ -2,8 +2,9 @@
 export interface ICar {
   /** Идентификатор авто */
   id?: string;
+  brand: string;
   /** Модель авто */
   model: string;
-  /** Дата сборки */
-  assemblyDate: Date;
+  // /** Дата сборки */
+  // assemblyDate: Date;
 }

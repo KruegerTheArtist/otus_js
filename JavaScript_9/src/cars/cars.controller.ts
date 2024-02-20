@@ -7,14 +7,20 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
 import { CarsService } from './cars.service';
 import { ICar } from './interfaces/car.interface';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 /** Эндпоинт для работы с автомобилями */
 @Controller('cars')
 export class CarsController {
-  constructor(private readonly carsService: CarsService) {}
+  constructor(
+    private readonly carsService: CarsService,
+    private usersService: UsersService,
+  ) {}
 
   /** Создать автомобиль */
   @Post()
@@ -23,8 +29,15 @@ export class CarsController {
   }
 
   /** Получить полный список авто */
+  // @UseGuards(LocalAuthGuard)
   @Get()
   getAll(): ICar[] {
+    this.usersService.createAndAssignRandomCar({
+      login: 'Teeeest',
+      password: '',
+      email: '2',
+      name: '241',
+    });
     return this.carsService.getAll();
   }
 
