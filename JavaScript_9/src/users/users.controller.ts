@@ -12,8 +12,10 @@ import { UsersService } from './users.service';
 import { IUser } from './interfaces/user.interface';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DeleteResult } from 'typeorm';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('Users')
 export class UsersController {
   constructor(private _usersService: UsersService) {}
 

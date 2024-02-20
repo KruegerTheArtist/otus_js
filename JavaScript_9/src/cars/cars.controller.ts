@@ -14,10 +14,12 @@ import { ICar } from './interfaces/car.interface';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CarCreateRequest } from './interfaces/requests/car-create-request.type';
 import { Car } from 'src/shared/entities/car.entity';
-import { DeleteResult, InsertResult } from 'typeorm';
+import { DeleteResult } from 'typeorm';
+import { ApiTags } from '@nestjs/swagger';
 
 /** Эндпоинт для работы с автомобилями */
 @Controller('cars')
+@ApiTags('Cars')
 export class CarsController {
   constructor(private readonly carsService: CarsService) {}
 
