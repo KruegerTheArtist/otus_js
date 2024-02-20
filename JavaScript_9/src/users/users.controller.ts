@@ -9,21 +9,21 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { IUser } from './interfaces/user.interface';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private _usersService: UsersService) {}
 
   /** Проставить рандомную машину мечты для пользователя */
-  @UseGuards(LocalAuthGuard)
   @Post('assignRandomDreamCar/:id')
+  @UseGuards(JwtAuthGuard)
   assignRandomDreamCar(@Param('id') id: string): void | NotFoundException {
     this._usersService.assignCarForUserDream(id);
   }
 
   /** Проставить рандомную машину мечты по его бренду для пользователя */
-  @UseGuards(LocalAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   update(
     @Param('id') id: string,

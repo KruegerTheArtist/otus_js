@@ -38,7 +38,7 @@ export class AuthService {
   async login(user: IUserSignInRequest): Promise<ILoginResponse> {
     console.log('user ', user);
 
-    const payload = { username: user.login };
+    const payload = { login: user.login };
     const loginResponse = {
       access_token: this.jwtService.sign(payload),
     };

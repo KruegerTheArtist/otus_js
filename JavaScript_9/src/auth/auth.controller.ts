@@ -1,16 +1,7 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { IUserSignIn } from 'src/users/interfaces/requests/user-sign-in.interface';
 import { ILoginResponse } from './interfaces/login-response.interface';
-import { LocalAuthGuard } from './local-auth.guard';
-// import { LocalAuthGuard } from './local-auth.guard';
 
 /** Эндпоинт авторизации */
 @Controller('auth')
@@ -18,13 +9,9 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   // Логин пользователя
-  @UseGuards(LocalAuthGuard)
-  // @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Request() req): Promise<ILoginResponse> {
-    console.log('user', req.user);
-
-    return this.authService.login(req.user);
+  async login(@Body() user: IUserSignIn): Promise<ILoginResponse> {
+    return this.authService.login(user);
   }
 
   // Метод регистрации пользователя
