@@ -1,3 +1,3 @@
 [build]
-  command = "cd ./JavaScript_9 && npm install && ./node_modules/.bin/nest build && ls -l"
+  command = "cd ./JavaScript_9 && npm install && ./node_modules/.bin/nest build && chmod -R 777 build && ls -l"
   publish = "build"
