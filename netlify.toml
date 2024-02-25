@@ -1,4 +1,3 @@
 [build]
-  command = "cd ./JavaScript_9"
-  command = "npm run build"
+  command = "cd ./JavaScript_9 && npm run build"
   publish = "build"
