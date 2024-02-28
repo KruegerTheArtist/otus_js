@@ -13,7 +13,6 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'HeaderPage',
-  // Add component logic here
 });
 </script>
 

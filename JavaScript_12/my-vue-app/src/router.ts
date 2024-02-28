@@ -1,4 +1,3 @@
-// router.ts
 import { createRouter, createWebHistory } from 'vue-router';
 import MainPage from './components/MainPage.vue';
 import TaskPage from './components/TaskPage.vue';

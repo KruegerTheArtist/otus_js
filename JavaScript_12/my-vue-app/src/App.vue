@@ -17,7 +17,6 @@ export default defineComponent({
     HeaderPage,
     FooterPage,
   },
-  // Add any global logic here
 });
 </script>
 

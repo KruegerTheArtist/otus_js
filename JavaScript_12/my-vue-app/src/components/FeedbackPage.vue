@@ -1,7 +1,6 @@
 <template>
   <div>
     <h1>Feedback Page</h1>
-    <!-- Add feedback page content here -->
   </div>
 </template>
 
@@ -10,6 +9,5 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'FeedbackPage',
-  // Add component logic here
 });
 </script>

@@ -23,8 +23,7 @@ export default {
   methods: {
     submitSolution() {
       const solutionCode = this.codeMirrorEditor.getValue();
-      // Отправка решения на сервер или другая логика обработки решения
-      console.log('Submitted solution:', solutionCode);
+      console.log('Решение:', solutionCode);
     },
   },
   beforeUnmount() {
@@ -36,5 +35,4 @@ export default {
 </script>
 
 <style>
-/* Add custom styles for the code editor if needed */
 </style>
