@@ -39,7 +39,7 @@
 <script>
 import InteractiveCodeEditor from './InteractiveCodeEditor.vue';
 import CommentsSection from './CommentsSection.vue';
-import {tasksList} from '../shared/constants/tasks';
+import {useStore} from '../shared/store/store';
 
 export default {
   props: {
@@ -58,9 +58,16 @@ export default {
   mounted() {
     this.loadTask(this.$route.params.id);
   },
+  setup() {
+    const store = useStore();
+
+    const userProfile = store.userProfile;
+    const tasks = store.tasks;
+    return { userProfile, tasks };
+  },
   methods: {
     loadTask(taskId) {
-     this.task = tasksList.find(task => task.id == taskId)
+     this.task = this.tasks.find(task => task.id == taskId)
      console.log('task', this.task);
     }
   },

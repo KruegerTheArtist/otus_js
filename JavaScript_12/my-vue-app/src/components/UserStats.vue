@@ -1,6 +1,5 @@
 <template>
-  <div class="user-stats">
-    <h2>User Statistics</h2>
+  <div v-if="userProfile" class="user-stats">
     <div>
       <div class="cards" v-for="(stat, index) in userStats" :key="index">
         <div class="user-card">
@@ -16,15 +15,21 @@
       </div>
     </div>
   </div>
+  <div v-else class="main"><img src="https://images.mysafetysign.com/img/md/S/authorized-drivers-only-forklift-sign-s2-0604.png" alt="Description of the image"></div>
+
 </template>
 <script>
-import {userStats} from '../shared/constants/user-stats';
+import { useStore } from '../shared/store/store';
 export default {
   name: 'UserStats',
-  data() {
-    return {
-      userStats: userStats
-    };
+  setup() {
+    const store = useStore();
+
+    const userProfile = store.userProfile;
+    const tasks = store.tasks;
+    const userStats = store.userStats;
+
+    return { userProfile, tasks, userStats };
   }
 }
 </script>

@@ -1,25 +1,29 @@
 <template>
-  <div class="main">
+  <div v-if="userProfile" class="main">
     <h1>Список задач</h1>
     <TaskList :tasks="tasks" />
   </div>
+  <div v-else class="main"><img src="https://images.mysafetysign.com/img/md/S/authorized-drivers-only-forklift-sign-s2-0604.png" alt="Description of the image"></div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import TaskList from './TaskList.vue';
-import {tasksList} from '../shared/constants/tasks';
+import {useStore} from '../shared/store/store';
 
 export default defineComponent({
   name: 'MainPage',
   components: {
     TaskList,
   },
-  data() {
-    return {
-      tasks: tasksList,
-    };
-  },
+  setup() {
+    const store = useStore();
+
+    const userProfile = store.userProfile;
+    const tasks = store.tasks;
+
+    return { userProfile, tasks };
+  }
 });
 </script>
 
