@@ -1,0 +1,43 @@
+
+
+.container-block {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+.centered-text {
+    position: absolute;
+    font-size: xx-large;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: fadeIn 1s ease-in-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .container-text {
+
+    height: 500px;
+    width: 500px;
+  }
+
+  .input-field {
+    width: 50%;
+    align-self: center;
+  }
+
+  .button-block {
+    display: flex;
+    flex-direction: row;
+    place-content: center;
+    align-items: center;
+  }

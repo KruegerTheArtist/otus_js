@@ -1,0 +1,9 @@
+<div class="recently-added-container">
+  <button mat-button class="button" (click)="addWord()">Добавить слово</button>
+  <div class="category" *ngFor="let category of categories; let i = index">
+        <h3>{{category}}</h3>
+        <div class="word-array" *ngFor="let recentlyWord of getFilteredData(category); let i = index">
+            <span class="word">{{recentlyWord.word}}</span>
+        </div>
+    </div>
+</div>

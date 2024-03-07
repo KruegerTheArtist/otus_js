@@ -1,0 +1,16 @@
+<div class="select-container" [formGroup]="formGroup">
+    <h1>Настройки обучения</h1>
+    <h3>Для того, чтобы начать обучения введите свой язык и язык для обучения</h3>
+    <mat-form-field>
+        <mat-label>Выберите свой язык</mat-label>
+        <mat-select formControlName="myLang">
+            <mat-option *ngFor="let lang of langArray" [value]="lang.id">{{lang.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Выберите язык для обучения</mat-label>
+        <mat-select formControlName="otherLang">
+            <mat-option *ngFor="let lang of langArray" [value]="lang.id">{{lang.name}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>

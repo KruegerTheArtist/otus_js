@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+
+html {
+    background: #e3e3e3;
+    font-family: 'Roboto', sans-serif;
+}
+
+.snack-success{
+  color: #fff;
+  background-color: #1F8B4D;
+  --mdc-snackbar-container-color: #1F8B4D!important;
+}
+
+.snack-fail{
+  color: #fff;
+  background-color: #8b2f1f;
+  --mdc-snackbar-container-color: #8b1f1f!important;
+}
+
+.dialog {
+    border-radius: 20px;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 20px !important;
+}

@@ -1,0 +1,14 @@
+<div class="container-block">
+  <div class="container-text">
+    <div class="centered-text">
+      {{selectedWord}}
+    </div>
+  </div>
+  <div class="button-block">
+    <mat-form-field class="input-field">
+      <mat-label>Введите слово</mat-label>
+      <input matInput [formControl]="searchText" type="text">
+    </mat-form-field>
+    <button matButton (click)="handleTranslateWord(selectedWord)">Перевести</button>
+  </div>
+</div>
