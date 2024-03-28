@@ -1,18 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LessonComponent } from './lesson.component';
+import { TagsComponent } from './tags.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { StoreService } from 'app/shared/services/store.service';
 
-describe('LessonComponent', () => {
-  let component: LessonComponent;
-  let fixture: ComponentFixture<LessonComponent>;
+describe('TagsComponent', () => {
+  let component: TagsComponent;
+  let fixture: ComponentFixture<TagsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ LessonComponent ]
+      providers:[
+        BrowserAnimationsModule,
+        StoreService
+      ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(LessonComponent);
+    fixture = TestBed.createComponent(TagsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
