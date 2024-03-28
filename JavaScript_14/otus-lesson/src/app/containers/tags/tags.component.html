@@ -1,0 +1,12 @@
+<div class="recently-added-container">
+    <button mat-button class="button" (click)="addTag()">Добавить слово</button>
+    <div class="category" *ngFor="let tag of tags; let i = index">
+      <div class="word-array">
+        <span class="word" (click)="editTag(tag)">
+          {{ tag.name }}
+          <span class="red" (click)="deleteTag(tag)">—</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  
