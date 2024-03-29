@@ -32,7 +32,7 @@ import { StoreService } from '../../shared/services/store.service';
   providers: [StoreService, TagsRepository],
 })
 export class TasksEditorDialogComponent implements OnInit {
-  tags = this._tagsRepository.getAll();
+  tags$ = this._tagsRepository.getAll();
 
   levelArray = Object.values(Level);
 

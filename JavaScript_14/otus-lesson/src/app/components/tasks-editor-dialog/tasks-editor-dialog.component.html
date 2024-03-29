@@ -22,7 +22,7 @@
     <mat-form-field>
       <mat-label>Теги</mat-label>
       <mat-select formControlName="tags" multiple>
-        <mat-option *ngFor="let tag of tags" [value]="tag.id">{{ tag.name }}</mat-option>
+        <mat-option *ngFor="let tag of (tags$ | async)?.tags" [value]="tag.id">{{ tag.name }}</mat-option>
       </mat-select>
     </mat-form-field>
   </mat-dialog-content>

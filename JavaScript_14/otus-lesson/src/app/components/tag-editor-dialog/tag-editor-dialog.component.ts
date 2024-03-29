@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Inject, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, UntypedFormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,7 +28,10 @@ import { IReturnDialogData } from '../../shared/interfaces/return-dialog-data';
   providers: [StoreService],
 })
 export class TagEditorDialogComponent implements OnInit {
-  name = new FormControl('');
+  formGroup = new UntypedFormGroup({
+    id: new FormControl<number | null | undefined>(null),
+    name: new FormControl<string>('', { nonNullable: true }),
+  })
 
   constructor(
     @Inject(MAT_DIALOG_DATA)
@@ -41,7 +44,7 @@ export class TagEditorDialogComponent implements OnInit {
    */
   ngOnInit(): void {
     if (this.data) {
-      this.name.setValue(this.data.name);
+      this.formGroup.patchValue(this.data);
     }
   }
 
@@ -56,6 +59,6 @@ export class TagEditorDialogComponent implements OnInit {
    *
    */
   handleOk() {
-    this._dialogRef.close({ ok: true, data: { name: String(this.name.value) } });
+    this._dialogRef.close({ ok: true, data: this.formGroup.value });
   }
 }

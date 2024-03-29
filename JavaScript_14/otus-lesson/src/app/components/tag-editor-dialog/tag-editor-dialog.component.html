@@ -1,9 +1,9 @@
 <div class="dialog">
   <div class="header">Добавление слова</div>
-  <mat-dialog-content class="content">
+  <mat-dialog-content class="content" [formGroup]="formGroup">
     <mat-form-field appearance="outline">
       <mat-label>Введите слово</mat-label>
-      <input matInput [formControl]="name" />
+      <input matInput formControlName="name" />
     </mat-form-field>
   </mat-dialog-content>
   <mat-dialog-actions class="d-flex flex-column gap-24 actions">

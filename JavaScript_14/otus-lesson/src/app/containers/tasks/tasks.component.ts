@@ -9,7 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { Observable, Subject, filter, forkJoin, mergeMap, of, take, takeUntil } from 'rxjs';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ITask } from 'app/shared/interfaces/task.interface';
@@ -17,6 +17,7 @@ import { TasksEditorDialogComponent } from 'app/components/tasks-editor-dialog/t
 import { TasksRepository } from './tasks.repository';
 import { ITag } from '../../shared/interfaces/tag.interface';
 import { StoreService, TAGS_KEY } from '../../shared/services/store.service';
+import { TasksState } from 'app/shared/reducers/tasks.reducer';
 
 /**
  *
@@ -38,8 +39,11 @@ import { StoreService, TAGS_KEY } from '../../shared/services/store.service';
   providers: [TasksRepository, StoreService],
 })
 export class TasksComponent implements OnInit, OnDestroy {
-  tasks: ITask[] = [];
-
+  
+  public get tasks$() : Observable<TasksState> {
+    return this._tasksRepository.getAll()
+  }
+  
   /** Событие отписки */
   private _ngUnsubscribe$ = new Subject<void>();
 
@@ -55,7 +59,6 @@ export class TasksComponent implements OnInit, OnDestroy {
    *
    */
   ngOnInit(): void {
-    this.initData();
   }
 
   /**
@@ -69,14 +72,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  initData(): string | void {
-    this.tasks = this._tasksRepository.getAll();
-  }
-
-  /**
-   *
-   */
-  addTag(): void {
+  addTask(): void {
     this._dialog
       .open(TasksEditorDialogComponent, {
         panelClass: 'dialog',
@@ -93,7 +89,6 @@ export class TasksComponent implements OnInit, OnDestroy {
             panelClass: 'snack-success',
           });
           this._tasksRepository.add(response.data);
-          this.initData();
           this._cdr.detectChanges();
         }
       });
@@ -102,7 +97,7 @@ export class TasksComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  editTag(tag: ITask): void {
+  editTask(tag: ITask): void {
     this._dialog
       .open(TasksEditorDialogComponent, {
         panelClass: 'dialog',
@@ -111,21 +106,20 @@ export class TasksComponent implements OnInit, OnDestroy {
       .afterClosed()
       .pipe(
         filter((result) => Boolean(result?.ok)),
+        mergeMap((response) => {
+          return forkJoin([of(response), this._tasksRepository.getAll().pipe(take(1))]) }),
         takeUntil(this._ngUnsubscribe$)
       )
-      .subscribe((response) => {
+      .subscribe(([response, tasksResponse]) => {
         if (response.data) {
-          console.log(response.data);
-
           if (
-            this._tasksRepository.getAll().findIndex((x) => x.id === response.data.id) > -1
+            tasksResponse.tasks.findIndex((x) => x.id === response.data.id) > -1
           ) {
             this._tasksRepository.update(response.data);
             this._snackBar.open('Успешно обновлено', '', {
               duration: 2000,
               panelClass: 'snack-success',
             });
-            this.initData();
           } else {
             this._snackBar.open('Такая задача не найдена', '', {
               duration: 2000,
@@ -141,9 +135,8 @@ export class TasksComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  deleteTag(tag: ITask): void {
+  deleteTask(tag: ITask): void {
     this._tasksRepository.delete(tag);
-    this.initData();
   }
 
   /**
