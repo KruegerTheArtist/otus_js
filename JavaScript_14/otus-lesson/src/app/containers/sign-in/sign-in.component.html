@@ -1,0 +1,13 @@
+<div class="select-container" [formGroup]="formGroup">
+    <h1>Авторизация</h1>
+    <mat-form-field>
+        <mat-label>Логин</mat-label>
+        <input matInput formControlName="login" type="text" required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Пароль</mat-label>
+        <input matInput formControlName="password" type="password" required>
+    </mat-form-field>
+    <button matButton (click)="login()" [disabled]="!formGroup.valid">Войти</button>
+    <span>Нет аккаунта? <span class="pointer underline" [routerLink]="['/sign-up']">Зарегистрироваться</span></span>
+</div>

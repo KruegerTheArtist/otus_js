@@ -1,11 +1,10 @@
-import { IRecentlyAdded } from "./recently-added.interface";
-
 /** Интерфейс для передачи данных из диалогового окна */
-export interface IReturnDialogData {
+export interface IReturnDialogData<T> {
     /** Закрыто с помощью главной кнопки */
     ok?: boolean;
     /** Закрыто с помощью кнопки "Отмена" */
     cancel?: boolean;
     /** Данные для передачи в компонент */
-    data?: IRecentlyAdded;
-}
+    data?: T;
+  }
+  

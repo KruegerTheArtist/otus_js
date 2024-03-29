@@ -1,0 +1,17 @@
+<div class="dialog">
+  <div class="header">
+      {{data.title}}
+  </div>
+  <mat-dialog-content class="content">
+    {{data.message}}
+  </mat-dialog-content>
+  <mat-dialog-actions class="d-flex flex-column gap-24 actions">
+    <button class="w-100" mat-flat-button color="primary"
+      (click)="handleOk()">
+      {{data.accept}}
+    </button>
+    <button class="cancel-button w-100" mat-flat-button (click)="handleCancel()">
+      {{data.reject}}
+    </button>
+  </mat-dialog-actions>
+</div>

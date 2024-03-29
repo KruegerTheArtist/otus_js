@@ -15,7 +15,28 @@ const routes: Routes = [
       {
         path: 'lesson',
         loadComponent: () => import('./app/containers/lesson/lesson.component').then(m => m.LessonComponent)
-      }
+      },
+      {
+        path: 'sign-in',
+        loadComponent: () => import('./app/containers/sign-in/sign-in.component').then(m => m.SignInComponent)
+      },
+      {
+        path: 'sign-up',
+        loadComponent: () => import('./app/containers/sign-up/sign-up.component').then(m => m.SignUpComponent)
+      },
+      {
+        path: 'profile',
+        loadComponent: () => import('./app/containers/profile/profile.component').then(m => m.ProfileComponent)
+      },
+      {
+        path: 'tags',
+        loadComponent: () => import('./app/containers/tags/tags.component').then(m => m.TagsComponent)
+      },
+      {
+        path: 'tasks',
+        loadComponent: () => import('./app/containers/tasks/tasks.component').then(m => m.TasksComponent)
+      },
+      
 ]
 
 bootstrapApplication(AppComponent, {

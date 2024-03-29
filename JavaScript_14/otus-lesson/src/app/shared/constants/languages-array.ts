@@ -1,2 +1,6 @@
 /** Доступные языки */
-export const LANGUAGES = [{id: 'ru', name: 'Русский'}, {id: 'en', name: 'Английский'}]
+export const LANGUAGES = [
+    { id: 'ru', name: 'Русский' },
+    { id: 'en', name: 'Английский' },
+  ];
+  
