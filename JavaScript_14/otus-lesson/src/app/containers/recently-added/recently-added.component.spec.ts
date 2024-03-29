@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RecentlyAddedComponent } from './recently-added.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('RecentlyAddedComponent', () => {
   let component: RecentlyAddedComponent;
@@ -8,7 +9,9 @@ describe('RecentlyAddedComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ RecentlyAddedComponent ]
+      providers:[
+        BrowserAnimationsModule
+      ]
     })
     .compileComponents();
 

@@ -3,9 +3,17 @@
     <div class="navigation">
       <button mat-button class="button" [routerLink]="['/']">Главная</button>
       <span> | </span>
+      <button mat-button class="button" [routerLink]="['/tags']">Теги</button>
+      <span> | </span>
+      <button mat-button class="button" [routerLink]="['/tasks']">Задачи</button>
+      <span> | </span>
       <button mat-button class="button" [routerLink]="['/lesson']">Упражнения</button>
       <span> | </span>
       <button mat-button class="button" [routerLink]="['/settings']">Настройки</button>
+    </div>
+    <div class="user-action">
+      <img *ngIf="isLoggedIn$ | async" class="profile" [routerLink]="['/profile']" src="https://cdn4.iconfinder.com/data/icons/motorcycle/500/motorcycle_14-1024.png">
+      <img class="profile" (click)="logout()" src="https://prd1.cloud.lojack.nl/connect/img/icon_logout.svg">
     </div>
   </div>
 </header>

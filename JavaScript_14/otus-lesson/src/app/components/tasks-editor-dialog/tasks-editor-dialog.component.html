@@ -1,0 +1,37 @@
+<div class="dialog">
+  <div class="header">Добавление слова</div>
+  <mat-dialog-content class="content" [formGroup]="formGroup">
+    <mat-form-field appearance="outline">
+      <mat-label>Наименование</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Описание</mat-label>
+      <textarea rows="4" matInput formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Пример входных и выходных данных</mat-label>
+      <textarea rows="4" matInput formControlName="exampleData"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Сложность</mat-label>
+      <mat-select formControlName="level">
+        <mat-option *ngFor="let level of levelArray" [value]="level">{{ level }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Теги</mat-label>
+      <mat-select formControlName="tags" multiple>
+        <mat-option *ngFor="let tag of tags" [value]="tag.id">{{ tag.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions class="d-flex flex-column gap-24 actions">
+    <button class="w-100" mat-flat-button color="primary" (click)="handleOk()">
+      Сохранить
+    </button>
+    <button class="cancel-button w-100" mat-flat-button (click)="handleCancel()">
+      Отменить
+    </button>
+  </mat-dialog-actions>
+</div>
