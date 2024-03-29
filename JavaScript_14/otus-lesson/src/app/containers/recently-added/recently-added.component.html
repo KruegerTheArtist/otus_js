@@ -1,5 +1,6 @@
 <div class="recently-added-container">
     <button mat-button class="button" (click)="addWord()">Добавить слово</button>
+
     <div class="category" *ngFor="let category of categories; let i = index">
       <h3>{{ category }}</h3>
       <div

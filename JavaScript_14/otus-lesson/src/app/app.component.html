@@ -12,7 +12,7 @@
       <button mat-button class="button" [routerLink]="['/settings']">Настройки</button>
     </div>
     <div class="user-action">
-      <img *ngIf="isLoggedIn$ | async" class="profile" [routerLink]="['/profile']" src="https://cdn4.iconfinder.com/data/icons/motorcycle/500/motorcycle_14-1024.png">
+      <img *ngIf="(isLoggedIn$ | async)?.isLoggedIn" class="profile" [routerLink]="['/profile']" src="https://cdn4.iconfinder.com/data/icons/motorcycle/500/motorcycle_14-1024.png">
       <img class="profile" (click)="logout()" src="https://prd1.cloud.lojack.nl/connect/img/icon_logout.svg">
     </div>
   </div>

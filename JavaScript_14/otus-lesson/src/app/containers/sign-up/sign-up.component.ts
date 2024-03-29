@@ -4,12 +4,11 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  SkipSelf,
 } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
-import { Subject } from 'rxjs';
+import { Observable, Subject, filter, mergeMap, take, tap } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatInputModule } from '@angular/material/input';
 import { IUser } from 'app/shared/interfaces/user.interface';
@@ -17,6 +16,9 @@ import { StateService } from 'app/shared/services/state.service';
 import { Router, RouterModule } from '@angular/router';
 import { UsersRepository } from '../users/users.repository';
 import { AUTH_USER_KEY, StoreService } from '../../shared/services/store.service';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'app/shared/reducers/auth.reducer';
+import { login as loginUser } from '../../shared/actions/auth.actions';
 
 /**
  *
@@ -45,15 +47,16 @@ export class SignUpComponent implements OnInit, OnDestroy {
     password: new FormControl('', { nonNullable: true }),
   });
 
+  auth$?: Observable<AuthState>;
+
   /** Событие отписки */
   private _ngUnsubscribe$ = new Subject<void>();
 
   constructor(
-    @SkipSelf()
-    private _stateService: StateService,
     private _storeService: StoreService,
     private _snackBar: MatSnackBar,
     private _router: Router,
+    private store: Store<{ auth: AuthState }>,
     private _usersRepository: UsersRepository
   ) {}
 
@@ -80,29 +83,22 @@ export class SignUpComponent implements OnInit, OnDestroy {
       });
       return;
     }
-    const user = this._usersRepository.getOneByLogin(login);
-    if (user) {
-      this._snackBar.open('Пользователь с таким логином уже существует', '', {
-        duration: 2000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-        panelClass: 'snack-fail',
-      });
-      this.formGroup.controls.login.setErrors({ incorrect: true });
-      this.formGroup.controls.password.setErrors({ incorrect: true });
-    } else {
-      const newUser = this._usersRepository.add(this.formGroup.value as IUser);
-      const authUser = { authDate: new Date(), ...newUser };
-      this._storeService.set(AUTH_USER_KEY, authUser);
-      this._stateService.isLoggedIn$.next(true);
-      this._stateService.currentAuthUser$.next(authUser);
-      this._snackBar.open('регистрация успешна', '', {
-        duration: 2000,
-        horizontalPosition: 'right',
-        verticalPosition: 'top',
-        panelClass: 'snack-success',
-      });
-      this._router.navigate(['']);
-    }
+    this._usersRepository.getOneByLogin(login).pipe(
+      take(1),
+      filter(user => !user),
+      mergeMap(() => this._usersRepository.add(this.formGroup.value as IUser)),
+      tap(user => {
+        const authUser = { authDate: new Date(), ...user };
+        this._storeService.set(AUTH_USER_KEY, authUser);
+        this.store.dispatch(loginUser(authUser));
+        this._snackBar.open('регистрация успешна', '', {
+          duration: 2000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: 'snack-success',
+        });
+        this._router.navigate(['']);
+      })
+    ).subscribe();
   }
 }

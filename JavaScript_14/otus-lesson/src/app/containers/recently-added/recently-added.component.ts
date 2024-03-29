@@ -1,13 +1,17 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IRecentlyAdded } from 'app/shared/interfaces/recently-added.interface';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { Observable, Subject, filter, takeUntil } from 'rxjs';
 import { ISettings } from 'app/shared/interfaces/settings.interface';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddWordDialogComponent } from 'app/components/add-word-dialog/add-word-dialog.component';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { SETTINGS_KEY, StoreService } from '../../shared/services/store.service';
 import { RecentlyAddedRepository } from './recently-added.repository';
+import { Store } from '@ngrx/store';
+import { AuthState } from 'app/shared/reducers/auth.reducer';
+import { decrement, increment, reset } from 'app/shared/actions/counter.actions';
+import { CountState } from 'app/shared/reducers/counter.reducer';
 
 /**
  *
@@ -27,6 +31,9 @@ export class RecentlyAddedComponent implements OnInit, OnDestroy {
 
   private _userSettings = this._storeService.get<ISettings>(SETTINGS_KEY);
 
+  // auth$?: Observable<AuthState>;
+  count$?: Observable<number>;
+
   /** Событие отписки */
   private _ngUnsubscribe$ = new Subject<void>();
 
@@ -34,14 +41,39 @@ export class RecentlyAddedComponent implements OnInit, OnDestroy {
     private _recentlyAddedRepository: RecentlyAddedRepository,
     private _snackBar: MatSnackBar,
     private _storeService: StoreService,
-    private _dialog: MatDialog
+    private _dialog: MatDialog,
+    private store: Store<{auth: AuthState, count: CountState}>
   ) {}
+
+  
+  increment() {
+    this.store.dispatch(increment());
+  }
+
+  decrement() {
+    this.store.dispatch(decrement());
+  }
+
+  reset() {
+    this.store.dispatch(reset());
+  }
 
   /**
    *
    */
   ngOnInit(): void {
-    this._initData();
+      console.log(this.store);
+      this._initData();
+      // this.auth$ = this.store.select('auth');
+      // this.auth$.subscribe((data) => {
+      //   console.log(data)
+      // })
+      // this.count$ = this.store.select('count');
+  }
+
+  aaa(a: unknown) {
+    console.log(a);
+    
   }
 
   /**

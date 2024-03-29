@@ -1,7 +1,7 @@
-<div class="select-container">
+<div *ngIf="(userList$ | async)?.users as users" class="select-container">
     <h1>Ваш профиль</h1>
-    <h2 *ngIf="(currentUser$ | async)?.name">Ваше имя {{ (currentUser$ | async)?.name }}</h2>
-    <div *ngIf="isAdmin(currentUser$ | async)" class="user-list">
+    <h2 *ngIf="(currentUser$ | async)?.currentAuthUser as currentUser">Ваше имя {{ currentUser?.name ?? currentUser?.login }}</h2>
+    <div *ngIf="isAdmin((currentUser$ | async)?.currentAuthUser)" class="user-list">
       <table class="our-table">
         <thead>
           <tr class="table-head">
@@ -9,13 +9,20 @@
             <th>Имя</th>
             <!-- <th>Дата авторизации</th> -->
             <th>Роли</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let user of userList" (click)="openEditUserDialog(user)">
+          <tr *ngFor="let user of users" >
             <td>{{ user.login }}</td>
             <td>{{ user.name }}</td>
             <td>{{ getRolesString(user.roles) }}</td>
+            <td>
+              <div class="manage-buttons">
+                <div class="delete-button" (click)="openEditUserDialog(user)"><mat-icon>edit</mat-icon></div>
+                <div class="delete-button" (click)="deleteUser(user)"><mat-icon>delete</mat-icon></div>
+              </div>
+            </td>
           </tr>
         </tbody>
       </table>

@@ -3,6 +3,12 @@ import { AppComponent } from './app/app.component';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { importProvidersFrom } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
+import { authReducer } from 'app/shared/reducers/auth.reducer';
+import { counterReducer } from 'app/shared/reducers/counter.reducer';
+import { tagsReducer } from 'app/shared/reducers/tags.reducer';
+import { usersReducer } from 'app/shared/reducers/users.reducer';
+import { tasksReducer } from 'app/shared/reducers/tasks.reducer';
 const routes: Routes = [
       {
         path: '',
@@ -42,7 +48,7 @@ const routes: Routes = [
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
-    importProvidersFrom([BrowserAnimationsModule])
+    importProvidersFrom([BrowserAnimationsModule, StoreModule.forRoot({ auth: authReducer, count: counterReducer, tags: tagsReducer, users: usersReducer, tasks: tasksReducer })]),
   ],
 })
   .catch((err) => console.error(err));

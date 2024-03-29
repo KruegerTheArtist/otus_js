@@ -53,3 +53,13 @@
         z-index: 2;
     }
 }
+
+.manage-buttons {
+  display: flex;
+  flex-direction: row;
+
+  .delete-button {
+    font-size: 18px;
+    cursor: pointer;
+  }
+}

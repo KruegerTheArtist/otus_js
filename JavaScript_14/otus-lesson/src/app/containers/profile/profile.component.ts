@@ -5,7 +5,6 @@ import {
   Component,
   OnDestroy,
   OnInit,
-  SkipSelf,
 } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -14,7 +13,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { Observable, Subject, filter, takeUntil } from 'rxjs';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { StateService } from 'app/shared/services/state.service';
 import { IAuthUser } from 'app/shared/interfaces/auth-user.interface';
 import { IUser } from 'app/shared/interfaces/user.interface';
 import { DEFAULT_ROLES } from 'app/shared/constants/default-roles';
@@ -22,6 +20,12 @@ import { EditUserDialogComponent } from 'app/components/edit-user-dialog/edit-us
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { StoreService } from '../../shared/services/store.service';
 import { UsersRepository } from '../users/users.repository';
+import { UsersState } from 'app/shared/reducers/users.reducer';
+import { AuthState } from 'app/shared/reducers/auth.reducer';
+import { Store } from '@ngrx/store';
+import { ConfirmDialogComponent } from 'app/components/confirm-dialog/confirm-dialog.component';
+import { IConfirmDialogData } from 'app/shared/interfaces/confirm-dialog-data.interface';
+import { MatIconModule } from '@angular/material/icon';
 
 /**
  *
@@ -39,8 +43,9 @@ import { UsersRepository } from '../users/users.repository';
     MatSelectModule,
     MatSnackBarModule,
     MatDialogModule,
+    MatIconModule
   ],
-  providers: [StoreService, UsersRepository, StateService],
+  providers: [StoreService, UsersRepository],
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   /** Событие отписки */
@@ -49,25 +54,24 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  get currentUser$(): Observable<IAuthUser | null> {
-    return this._stateService.currentAuthUser$;
+  get currentUser$(): Observable<AuthState | null> {
+    return this.store.select('auth');
   }
 
   /**
    *
    */
-  get userList(): IUser[] {
+  get userList$(): Observable<UsersState> {
     return this._usersRepository.getAll();
   }
 
   allRoles = DEFAULT_ROLES;
 
   constructor(
-    @SkipSelf()
-    private _stateService: StateService,
     private _dialog: MatDialog,
     private _cdr: ChangeDetectorRef,
     private _snackBar: MatSnackBar,
+    private store: Store<{auth: AuthState}>,
     private _usersRepository: UsersRepository
   ) {}
 
@@ -83,7 +87,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   /**
    *
    */
-  isAdmin(user: IAuthUser | null): boolean {
+  isAdmin(user: IAuthUser | null | undefined): boolean {
     if (!user) {
       return false;
     }
@@ -118,6 +122,30 @@ export class ProfileComponent implements OnInit, OnDestroy {
       });
   }
 
+  deleteUser(user: IUser): void {
+    const title = `Удаление пользователя ${user.name}`;
+    const message = 'Вы уверены, что хотите удалить его?';
+    const action = 'Удалить';
+
+    this._dialog
+      .open(ConfirmDialogComponent, { data: { title, message, action } })
+      .afterClosed()
+      .pipe(
+        filter((result) => result?.ok),
+        takeUntil(this._ngUnsubscribe$)
+      )
+      .subscribe(() => {
+        this._usersRepository.delete(user);
+        this._snackBar.open('Пользователь удален', '', {
+          duration: 2000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          panelClass: 'snack-fail',
+        });
+        this._cdr.detectChanges();
+      });
+  }
+
   private _updateUser(user: IUser): void {
     this._usersRepository.update(user);
     this._snackBar.open('Пользователь обновлен', '', {
@@ -126,6 +154,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
       verticalPosition: 'top',
       panelClass: 'snack-success',
     });
-    this._cdr.markForCheck();
+    this._cdr.detectChanges();
   }
 }
