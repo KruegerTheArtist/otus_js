@@ -11,6 +11,12 @@ import { IAuthUser } from './shared/interfaces/auth-user.interface';
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
 import { IConfirmDialogData } from './shared/interfaces/confirm-dialog-data.interface';
 import { StateService } from './shared/services/state.service';
+import { Store } from '@ngrx/store';
+import { AuthState } from './shared/reducers/auth.reducer';
+import { CountState } from './shared/reducers/counter.reducer';
+import { login, logout } from './shared/actions/auth.actions';
+
+// Reducers
 
 export const MATERIAL_MODULES = [MatButtonModule];
 
@@ -28,6 +34,9 @@ export const MATERIAL_MODULES = [MatButtonModule];
     MatSnackBarModule,
     HttpClientModule,
     MatDialogModule,
+    // EffectsModule.forRoot([]),
+    // !environment.production ? StoreDevtoolsModule.instrument() : [],
+   
     ...MATERIAL_MODULES,
   ],
   providers: [StoreService, StateService],
@@ -38,8 +47,8 @@ export class AppComponent {
   private _ngUnsubscribe$ = new Subject<void>();
 
   
-  get isLoggedIn$() : Observable<boolean> {
-    return this._stateService.isLoggedIn$;
+  get isLoggedIn$() : Observable<AuthState> {
+    return this.store.select('auth');
   }
   
 
@@ -49,6 +58,7 @@ export class AppComponent {
     private _snackBar: MatSnackBar,
     private _cdr: ChangeDetectorRef,
     private _dialog: MatDialog,
+    private store: Store<{auth: AuthState, count: CountState}>,
     private _router: Router
   ) {
     this._checkAuth();
@@ -74,14 +84,13 @@ export class AppComponent {
       )
       .subscribe(() => {
         this._storeService.remove(AUTH_USER_KEY);
-        this._stateService.isLoggedIn$.next(false);
-        this._stateService.currentAuthUser$.next(null);
         this._snackBar.open('Вы вышли из аккаунта', '', {
           duration: 2000,
           horizontalPosition: 'right',
           verticalPosition: 'top',
           panelClass: 'snack-fail',
         });
+        this.store.dispatch(logout());
         this._router.navigate(['/sign-in']);
         this._cdr.detectChanges();
       });
@@ -99,7 +108,7 @@ export class AppComponent {
       new Date().getTime() - new Date(authUser?.authDate).getTime() >= 15 * 60 * 1000
     ) {
       this._storeService.remove(AUTH_USER_KEY);
-        this._stateService.currentAuthUser$.next(null);
+      this.store.dispatch(logout());
         this._snackBar.open('Авторизация истекла, пожалуйста авторизуйтесь', '', {
         duration: 2000,
         horizontalPosition: 'right',
@@ -109,7 +118,6 @@ export class AppComponent {
       this._router.navigate(['/sign-in']);
       return;
     }
-    this._stateService.isLoggedIn$.next(true);
-    this._stateService.currentAuthUser$.next(authUser);
+      this.store.dispatch(login(authUser));
   }
 }

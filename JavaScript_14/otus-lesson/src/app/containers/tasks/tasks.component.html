@@ -1,15 +1,15 @@
 <div class="tasks-template">
-    <button mat-button class="button w-100" (click)="addTag()">Добавить задачу</button>
+    <button mat-button class="button w-100" (click)="addTask()">Добавить задачу</button>
     <div class="tasks-container">
-      <div class="task-card" *ngFor="let task of tasks; let i = index">
+      <div class="task-card" *ngFor="let task of (tasks$ | async)?.tasks; let i = index">
         <div class="title">
           <span>{{ task.name }}</span>
           <div class="manage-buttons">
-            <div class="delete-button" (click)="editTag(task)"><mat-icon>edit</mat-icon></div>
-            <div class="delete-button" (click)="deleteTag(task)"><mat-icon>delete</mat-icon></div></div>
+            <div class="delete-button" (click)="editTask(task)"><mat-icon>edit</mat-icon></div>
+            <div class="delete-button" (click)="deleteTask(task)"><mat-icon>delete</mat-icon></div></div>
         </div>
         <div class="info">
-            <div class="row-container" (click)="editTag(task)"><span>Уровень сложности: </span><span>{{ task.level }}</span></div>
+            <div class="row-container"><span>Уровень сложности: </span><span>{{ task.level }}</span></div>
             <div class="row-container"><span>Теги: </span><span>{{ getTagsName(task.tags) }}</span></div>
             <div class="row-container"><span>Описание: </span><span>{{ task.description }}</span></div>
             <div class="row-container"><span>Пример данных: </span><span>{{ task.exampleData }}</span></div>
