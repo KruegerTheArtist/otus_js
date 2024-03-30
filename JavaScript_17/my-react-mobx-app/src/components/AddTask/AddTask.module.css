@@ -1,0 +1,15 @@
+.AddUser {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    gap: 15px;
+    border: 1px solid black;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 0 12px 0 black;
+
+    h2 {
+        align-self: center;
+        text-align: center;
+    }
+}
