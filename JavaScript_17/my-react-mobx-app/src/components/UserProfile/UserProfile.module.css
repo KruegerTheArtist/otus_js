@@ -1,0 +1,46 @@
+.UserInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: white;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.Name {
+    font-size: 24px;
+    font-weight: bold;
+    align-self: center;
+    width: 100%;
+    text-align: center;
+}
+
+.Row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.RowTitle {
+    font-weight: bold;
+}
+
+.EditButton {
+    height: 20px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.EditButton:hover {
+    box-shadow: 0 0 2px 0 black;
+}
+
+.Rating {
+    color: rgb(224, 184, 4);
+}
+
+.FullWidth {
+    margin: 24px;
+}
