@@ -1,0 +1,19 @@
+:host {
+}
+
+.NavBar {
+    background-color: #0000ff38;
+    height: 45px;
+    border-radius: 12px;
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    color: white;
+    font-size: 24px;
+    box-shadow: 0 0 12px 0 black;
+
+    a {
+        text-decoration: none;
+    }
+}
